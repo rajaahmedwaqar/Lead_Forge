@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: 250 250 249;
+  --surface: 255 255 255;
+  --ink: 24 24 27;
+  --line: 228 228 231;
+  --brand: 4 120 87;
+  --brand-dark: 6 95 70;
+  --brand-soft: 236 253 245;
+  --brand-fg: 255 255 255;
+  --accent: 16 185 129;
+  --danger: 185 28 28;
+  --danger-soft: 254 242 242;
+  --warn: 161 98 7;
+  --warn-soft: 254 249 195;
+  --shadow: 24 24 27;
+  color-scheme: light;
+}
+.dark {
+  --paper: 9 9 11;
+  --surface: 20 20 23;
+  --ink: 244 244 245;
+  --line: 42 42 47;
+  --brand: 52 211 153;
+  --brand-dark: 110 231 183;
+  --brand-soft: 16 44 34;
+  --brand-fg: 3 20 12;
+  --accent: 52 211 153;
+  --danger: 252 165 165;
+  --danger-soft: 69 20 20;
+  --warn: 253 224 71;
+  --warn-soft: 66 52 8;
+  --shadow: 0 0 0;
+  color-scheme: dark;
+}
+
+/* Reveal-on-scroll (see Reveal in ui.tsx) */
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.in { opacity: 1; transform: none; }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes word-in { from { opacity: 0; transform: translateY(.35em); } to { opacity: 1; transform: none; } }
+@keyframes word-out { to { opacity: 0; transform: translateY(-.35em); } }
+
+/* Larger base type on desktop; every rem-based size and spacing scales with it. */
+html { font-size: 16px; }
+@media (min-width: 1024px) { html { font-size: 17.5px; } }
+@media (min-width: 1536px) { html { font-size: 19px; } }
+
+html { scroll-behavior: smooth; }
+body {
+  @apply bg-paper text-ink antialiased;
+  font-family: 'Manrope', system-ui, sans-serif;
+  background-image: radial-gradient(60rem 30rem at 50% -12%, rgb(var(--brand) / .08), transparent 70%);
+  background-attachment: fixed;
+}
+.text-gradient { background-image: linear-gradient(100deg, rgb(var(--brand-dark)), rgb(var(--accent))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.bg-brand-gradient { background-color: rgb(var(--brand)); }
+.leaflet-container { height: 100%; width: 100%; font-family: inherit; }
+.dark .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.92) contrast(.9); }
+
+:focus-visible { outline: 2px solid rgb(var(--brand)); outline-offset: 2px; border-radius: 6px; }
+
+@layer components {
+  .btn { @apply inline-flex min-h-[2.5rem] items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-bold transition duration-150 active:scale-[.98] disabled:pointer-events-none disabled:opacity-50; }
+  .btn-primary { @apply btn bg-moss text-moss-fg shadow-sm hover:-translate-y-px hover:bg-moss-dark hover:text-moss-fg hover:shadow-lg; }
+  .btn-outline { @apply btn border border-line bg-surface text-ink hover:bg-moss-light; }
+  .btn-ghost { @apply btn text-ink/80 hover:bg-moss-light; }
+  .btn-danger { @apply btn bg-danger text-white hover:opacity-90; }
+  .input { @apply min-h-[2.75rem] w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink/45 transition focus:border-moss; }
+  .card { @apply rounded-xl border border-line bg-surface shadow-card; }
+  .label { @apply mb-1 block text-sm font-semibold; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+}

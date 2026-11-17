@@ -1,0 +1,11 @@
+# Netlify / Cloudflare Pages: keep the private app out of search indexes even if a link leaks.
+/app/*
+  X-Robots-Tag: noindex, nofollow
+/admin/*
+  X-Robots-Tag: noindex, nofollow
+/login
+  X-Robots-Tag: noindex
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY

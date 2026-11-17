@@ -1,0 +1,94 @@
+{
+  "name": "LeadForge - Send Outreach",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "leadforge-send",
+        "responseMode": "responseNode",
+        "options": { "allowedOrigins": "*" }
+      },
+      "id": "a1b2c3d4-0001-4000-8000-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "leadforge-send-webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "is-test-condition",
+              "leftValue": "={{ $json.body.type }}",
+              "rightValue": "leadforge_test",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-0004-4000-8000-000000000004",
+      "name": "Is connection test?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, test: true }) }}",
+        "options": { "responseHeaders": { "entries": [ { "name": "Access-Control-Allow-Origin", "value": "*" } ] } }
+      },
+      "id": "a1b2c3d4-0005-4000-8000-000000000005",
+      "name": "Respond to test",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [520, -120]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "={{ $('Webhook').item.json.body.to }}",
+        "subject": "={{ $('Webhook').item.json.body.subject }}",
+        "emailType": "html",
+        "message": "={{ $('Webhook').item.json.body.html }}",
+        "options": { "appendAttribution": false }
+      },
+      "id": "a1b2c3d4-0002-4000-8000-000000000002",
+      "onError": "continueRegularOutput",
+      "name": "Send via Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [520, 120]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json.error ? { ok: false, error: String($json.error.message || $json.error) } : { ok: true }) }}",
+        "options": { "responseHeaders": { "entries": [ { "name": "Access-Control-Allow-Origin", "value": "*" } ] } }
+      },
+      "id": "a1b2c3d4-0003-4000-8000-000000000003",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [780, 120]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Is connection test?", "type": "main", "index": 0 }]] },
+    "Is connection test?": {
+      "main": [
+        [{ "node": "Respond to test", "type": "main", "index": 0 }],
+        [{ "node": "Send via Gmail", "type": "main", "index": 0 }]
+      ]
+    },
+    "Send via Gmail": { "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false
+}

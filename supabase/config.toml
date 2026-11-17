@@ -1,0 +1,18 @@
+project_id = "leadforge"
+
+# Callers are authenticated inside each function (see functions/_shared/http.ts), which works with
+# both legacy and new JWT signing keys. bootstrap-admin is guarded by ADMIN_SETUP_TOKEN instead.
+[functions.search-leads]
+verify_jwt = false
+
+[functions.generate-outreach]
+verify_jwt = false
+
+[functions.send-outreach]
+verify_jwt = false
+
+[functions.admin-diagnostics]
+verify_jwt = false
+
+[functions.bootstrap-admin]
+verify_jwt = false
